@@ -13,37 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Find and unzip project
+      - name: Show all files
+        run: |
+          echo "=== ROOT FILES ==="
+          ls -la
+          echo "=== ALL FILES ==="
+          find . -type f | sort
+
+      - name: Unzip
         run: |
           ZIP=$(find . -name "*.zip" | head -1)
-          if [ -n "$ZIP" ]; then
-            echo "Found ZIP: $ZIP"
-            unzip -q "$ZIP"
-            ls -la
-          fi
-
-      - name: Setup project
-        run: |
-          GRADLEW=$(find . -name "gradlew" -type f | head -1)
-          echo "Found: $GRADLEW"
-          PROJ_DIR=$(dirname "$GRADLEW")
-          echo "PROJ_DIR=$PROJ_DIR" >> $GITHUB_ENV
-          chmod +x "$GRADLEW"
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Build Debug APK
-        run: |
-          cd ${{ env.PROJ_DIR }}
-          ./gradlew assembleDebug --stacktrace
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: WorldDSPPlayer-v3-debug
-          path: ${{ env.PROJ_DIR }}/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 30
+          echo "ZIP: $ZIP"
+          unzip -q "$ZIP"
+          echo "=== AFTER UNZIP ==="
+          find . -type f | sort
